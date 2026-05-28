@@ -58,7 +58,7 @@ The extension renders that confidence as a badge beside the GitHub repository na
 
 Planned production scanning will replace the local heuristic with the pipeline described in `synthcode_planning.md`: fetch a filtered sample of repository files from the GitHub API, exclude generated or vendored paths, run static heuristics plus a fine-tuned code classifier, then combine those scores into the final confidence value.
 
-SynthCode results should always be treated as a signal, not proof.
+## Note - SynthCode results should always be treated as a signal, not proof.
 
 ## Run The Backend
 
