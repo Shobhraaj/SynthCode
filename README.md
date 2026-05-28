@@ -92,11 +92,12 @@ If the local backend is not running, the extension falls back to a deterministic
 ## Test
 
 ```bash
-node --test tests/extension-smoke.test.js
+node --test tests/*.test.js
 node --check extension/background.js
 node --check extension/content.js
 node --check extension/popup.js
 python -m py_compile main.py
+python -m unittest discover -s tests -p "test_*.py"
 ```
 
 ## Current Limits
