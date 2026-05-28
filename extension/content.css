@@ -1,3 +1,77 @@
+.synthcode-badge,
+.synthcode-card,
+.synthcode-score,
+.synthcode-action,
+.synthcode-disclaimer,
+.synthcode-file-score,
+.synthcode-file-badge {
+  color-scheme: light dark;
+}
+
+:root {
+  --sc-page-bg: #f6f8fa;
+  --sc-surface: #ffffff;
+  --sc-surface-muted: #f6f8fa;
+  --sc-text: #24292f;
+  --sc-muted: #57606a;
+  --sc-border: #d0d7de;
+  --sc-border-strong: #d8dee4;
+  --sc-button-bg: #24292f;
+  --sc-button-text: #ffffff;
+  --sc-button-hover: #0969da;
+  --sc-ring-border: #d0d7de;
+  --sc-ring-accent: #0969da;
+  --sc-disclaimer-bg: #f6f8fa;
+  --sc-disclaimer-border: #d8dee4;
+  --sc-disclaimer-strong: #24292f;
+  --sc-disclaimer-text: #57606a;
+  --sc-low-bg: #dafbe1;
+  --sc-low-border: #4ac26b;
+  --sc-low-text: #116329;
+  --sc-medium-bg: #fff8c5;
+  --sc-medium-border: #d4a72c;
+  --sc-medium-text: #7d4e00;
+  --sc-high-bg: #ffebe9;
+  --sc-high-border: #ff8182;
+  --sc-high-text: #cf222e;
+  --sc-error-bg: #f6f8fa;
+  --sc-error-border: #8c959f;
+  --sc-error-text: #57606a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --sc-page-bg: #0d1117;
+    --sc-surface: #161b22;
+    --sc-surface-muted: #161b22;
+    --sc-text: #c9d1d9;
+    --sc-muted: #8b949e;
+    --sc-border: #30363d;
+    --sc-border-strong: #30363d;
+    --sc-button-bg: #21262d;
+    --sc-button-text: #f0f6fc;
+    --sc-button-hover: #1f6feb;
+    --sc-ring-border: #30363d;
+    --sc-ring-accent: #58a6ff;
+    --sc-disclaimer-bg: #161b22;
+    --sc-disclaimer-border: #30363d;
+    --sc-disclaimer-strong: #f0f6fc;
+    --sc-disclaimer-text: #8b949e;
+    --sc-low-bg: #12261b;
+    --sc-low-border: #2da44e;
+    --sc-low-text: #3fb950;
+    --sc-medium-bg: #332b00;
+    --sc-medium-border: #9e6a03;
+    --sc-medium-text: #d29922;
+    --sc-high-bg: #3d1b1b;
+    --sc-high-border: #f85149;
+    --sc-high-text: #ff7b72;
+    --sc-error-bg: #161b22;
+    --sc-error-border: #30363d;
+    --sc-error-text: #8b949e;
+  }
+}
+
 .synthcode-badge {
   align-items: center;
   border: 1px solid transparent;
@@ -14,47 +88,47 @@
 
 .synthcode-badge--loading,
 .synthcode-file-badge--loading {
-  background: #f6f8fa;
-  border-color: #d0d7de;
-  color: #57606a;
+  background: var(--sc-surface-muted);
+  border-color: var(--sc-border);
+  color: var(--sc-muted);
 }
 
 .synthcode-badge--low,
 .synthcode-file-badge--low,
 .synthcode-file-score--low {
-  background: #dafbe1;
-  border-color: #4ac26b;
-  color: #116329;
+  background: var(--sc-low-bg);
+  border-color: var(--sc-low-border);
+  color: var(--sc-low-text);
 }
 
 .synthcode-badge--medium,
 .synthcode-file-badge--medium,
 .synthcode-file-score--medium {
-  background: #fff8c5;
-  border-color: #d4a72c;
-  color: #7d4e00;
+  background: var(--sc-medium-bg);
+  border-color: var(--sc-medium-border);
+  color: var(--sc-medium-text);
 }
 
 .synthcode-badge--high,
 .synthcode-file-badge--high,
 .synthcode-file-score--high {
-  background: #ffebe9;
-  border-color: #ff8182;
-  color: #cf222e;
+  background: var(--sc-high-bg);
+  border-color: var(--sc-high-border);
+  color: var(--sc-high-text);
 }
 
 .synthcode-badge--error {
-  background: #f6f8fa;
-  border-color: #8c959f;
-  color: #57606a;
+  background: var(--sc-error-bg);
+  border-color: var(--sc-error-border);
+  color: var(--sc-error-text);
 }
 
 .synthcode-card {
-  background: #ffffff;
-  border: 1px solid #d0d7de;
+  background: var(--sc-surface);
+  border: 1px solid var(--sc-border);
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(140, 149, 159, 0.18);
-  color: #24292f;
+  color: var(--sc-text);
   font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   margin-bottom: 16px;
   overflow: hidden;
@@ -62,15 +136,15 @@
 }
 
 .synthcode-card--low {
-  border-top: 3px solid #2da44e;
+  border-top: 3px solid var(--sc-low-border);
 }
 
 .synthcode-card--medium {
-  border-top: 3px solid #bf8700;
+  border-top: 3px solid var(--sc-medium-border);
 }
 
 .synthcode-card--high {
-  border-top: 3px solid #cf222e;
+  border-top: 3px solid var(--sc-high-border);
 }
 
 .synthcode-card__header {
@@ -81,7 +155,7 @@
 }
 
 .synthcode-kicker {
-  color: #57606a;
+  color: var(--sc-muted);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0;
@@ -89,7 +163,7 @@
 }
 
 .synthcode-card h2 {
-  color: #24292f;
+  color: var(--sc-text);
   font-size: 18px;
   line-height: 1.2;
   margin: 2px 0 0;
@@ -97,8 +171,8 @@
 
 .synthcode-score {
   align-items: center;
-  background: #f6f8fa;
-  border: 1px solid #d0d7de;
+  background: var(--sc-surface-muted);
+  border: 1px solid var(--sc-border);
   border-radius: 50%;
   display: flex;
   flex: 0 0 48px;
@@ -111,15 +185,15 @@
 
 .synthcode-ring {
   animation: synthcode-spin 900ms linear infinite;
-  border: 3px solid #d0d7de;
+  border: 3px solid var(--sc-ring-border);
   border-radius: 50%;
-  border-top-color: #0969da;
+  border-top-color: var(--sc-ring-accent);
   height: 28px;
   width: 28px;
 }
 
 .synthcode-muted {
-  color: #57606a;
+  color: var(--sc-muted);
   margin: 0 0 12px;
 }
 
@@ -135,7 +209,7 @@
 }
 
 .synthcode-meta dt {
-  color: #57606a;
+  color: var(--sc-muted);
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
@@ -149,7 +223,7 @@
 }
 
 .synthcode-files {
-  border-top: 1px solid #d8dee4;
+  border-top: 1px solid var(--sc-border-strong);
   margin-top: 10px;
   padding-top: 10px;
 }
@@ -197,10 +271,10 @@
 }
 
 .synthcode-action {
-  background: #24292f;
+  background: var(--sc-button-bg);
   border: 0;
   border-radius: 6px;
-  color: #ffffff;
+  color: var(--sc-button-text);
   cursor: pointer;
   font: 700 13px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   margin-top: 12px;
@@ -209,14 +283,14 @@
 }
 
 .synthcode-action:hover {
-  background: #0969da;
+  background: var(--sc-button-hover);
 }
 
 .synthcode-disclaimer {
-  background: #f6f8fa;
-  border: 1px solid #d8dee4;
+  background: var(--sc-disclaimer-bg);
+  border: 1px solid var(--sc-disclaimer-border);
   border-radius: 6px;
-  color: #57606a;
+  color: var(--sc-disclaimer-text);
   display: grid;
   gap: 3px;
   margin-top: 12px;
@@ -224,7 +298,7 @@
 }
 
 .synthcode-disclaimer strong {
-  color: #24292f;
+  color: var(--sc-disclaimer-strong);
 }
 
 @keyframes synthcode-spin {
