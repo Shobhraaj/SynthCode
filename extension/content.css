@@ -1,0 +1,234 @@
+.synthcode-badge {
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  font: 600 12px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  gap: 6px;
+  margin-left: 10px;
+  min-height: 24px;
+  padding: 4px 10px;
+  vertical-align: middle;
+}
+
+.synthcode-badge--loading,
+.synthcode-file-badge--loading {
+  background: #f6f8fa;
+  border-color: #d0d7de;
+  color: #57606a;
+}
+
+.synthcode-badge--low,
+.synthcode-file-badge--low,
+.synthcode-file-score--low {
+  background: #dafbe1;
+  border-color: #4ac26b;
+  color: #116329;
+}
+
+.synthcode-badge--medium,
+.synthcode-file-badge--medium,
+.synthcode-file-score--medium {
+  background: #fff8c5;
+  border-color: #d4a72c;
+  color: #7d4e00;
+}
+
+.synthcode-badge--high,
+.synthcode-file-badge--high,
+.synthcode-file-score--high {
+  background: #ffebe9;
+  border-color: #ff8182;
+  color: #cf222e;
+}
+
+.synthcode-badge--error {
+  background: #f6f8fa;
+  border-color: #8c959f;
+  color: #57606a;
+}
+
+.synthcode-card {
+  background: #ffffff;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(140, 149, 159, 0.18);
+  color: #24292f;
+  font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  margin-bottom: 16px;
+  overflow: hidden;
+  padding: 14px;
+}
+
+.synthcode-card--low {
+  border-top: 3px solid #2da44e;
+}
+
+.synthcode-card--medium {
+  border-top: 3px solid #bf8700;
+}
+
+.synthcode-card--high {
+  border-top: 3px solid #cf222e;
+}
+
+.synthcode-card__header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.synthcode-kicker {
+  color: #57606a;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.synthcode-card h2 {
+  color: #24292f;
+  font-size: 18px;
+  line-height: 1.2;
+  margin: 2px 0 0;
+}
+
+.synthcode-score {
+  align-items: center;
+  background: #f6f8fa;
+  border: 1px solid #d0d7de;
+  border-radius: 50%;
+  display: flex;
+  flex: 0 0 48px;
+  font-size: 16px;
+  font-weight: 800;
+  height: 48px;
+  justify-content: center;
+  width: 48px;
+}
+
+.synthcode-ring {
+  animation: synthcode-spin 900ms linear infinite;
+  border: 3px solid #d0d7de;
+  border-radius: 50%;
+  border-top-color: #0969da;
+  height: 28px;
+  width: 28px;
+}
+
+.synthcode-muted {
+  color: #57606a;
+  margin: 0 0 12px;
+}
+
+.synthcode-meta {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 1fr 1fr;
+  margin: 12px 0;
+}
+
+.synthcode-meta div {
+  min-width: 0;
+}
+
+.synthcode-meta dt {
+  color: #57606a;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.synthcode-meta dd {
+  margin: 2px 0 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.synthcode-files {
+  border-top: 1px solid #d8dee4;
+  margin-top: 10px;
+  padding-top: 10px;
+}
+
+.synthcode-files summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.synthcode-files ul {
+  display: grid;
+  gap: 6px;
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+.synthcode-files li {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.synthcode-files li span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.synthcode-file-score,
+.synthcode-file-badge {
+  border: 1px solid transparent;
+  border-radius: 999px;
+  flex: 0 0 auto;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+}
+
+.synthcode-file-badge {
+  display: inline-flex;
+  margin-left: 8px;
+}
+
+.synthcode-action {
+  background: #24292f;
+  border: 0;
+  border-radius: 6px;
+  color: #ffffff;
+  cursor: pointer;
+  font: 700 13px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  margin-top: 12px;
+  min-height: 34px;
+  padding: 0 12px;
+}
+
+.synthcode-action:hover {
+  background: #0969da;
+}
+
+.synthcode-disclaimer {
+  background: #f6f8fa;
+  border: 1px solid #d8dee4;
+  border-radius: 6px;
+  color: #57606a;
+  display: grid;
+  gap: 3px;
+  margin-top: 12px;
+  padding: 10px;
+}
+
+.synthcode-disclaimer strong {
+  color: #24292f;
+}
+
+@keyframes synthcode-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
