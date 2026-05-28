@@ -88,8 +88,8 @@ async function requestBackendAnalysis(apiBaseUrl, repo, forceRescan) {
 }
 
 async function pollJob(apiBaseUrl, jobId) {
-  for (let attempt = 0; attempt < 10; attempt += 1) {
-    await sleep(700 + attempt * 250);
+  for (let attempt = 0; attempt < 30; attempt += 1) {
+    await sleep(2000);
     const response = await fetch(`${apiBaseUrl}/api/v1/status/${encodeURIComponent(jobId)}`);
     if (!response.ok) {
       throw new Error(`Status API returned ${response.status}`);
@@ -99,8 +99,16 @@ async function pollJob(apiBaseUrl, jobId) {
     if (payload.status === "completed" && payload.result) {
       return normalizeResult(payload.result, "backend");
     }
-    if (payload.status === "failed") {
-      throw new Error(payload.error || "Analysis failed");
+    if (payload.status === "completed" && payload.result_url) {
+      const resultUrl = new URL(payload.result_url, apiBaseUrl);
+      const resultResponse = await fetch(resultUrl.toString());
+      if (!resultResponse.ok) {
+        throw new Error(`Results API returned ${resultResponse.status}`);
+      }
+      return normalizeResult(await resultResponse.json(), "backend");
+    }
+    if (payload.status === "failed" || payload.status === "timeout") {
+      throw new Error(payload.error || payload.message || "Analysis failed");
     }
   }
 
