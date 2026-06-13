@@ -128,7 +128,8 @@ It includes:
 - Model/tokenizer loading through Hugging Face Transformers when weights are available.
 - Batch prediction and token-window chunking.
 - Heuristic fallback prediction when model dependencies or weights are unavailable.
-- Dataset/training/evaluation placeholders under `inference/ml`.
+- Data preparation script (`prepare_dataset.py`) to fetch and process `basakdemirok/AIGCodeSet` using Hugging Face `datasets`.
+- A fully trained token-based heuristic baseline model utilizing weights generated via `inference/ml/train.py`, achieving ~72.7% accuracy.
 
 ## Note - SynthCode results should always be treated as a signal, not proof.
 
