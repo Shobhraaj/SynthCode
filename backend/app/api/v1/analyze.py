@@ -5,6 +5,7 @@ import json
 import os
 import uuid
 from datetime import datetime, timezone
+from pathlib import Path
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 
@@ -17,6 +18,8 @@ router = APIRouter(tags=["analysis"])
 
 RESULTS: dict[tuple[str, str, str], AnalysisResult] = {}
 JOBS: dict[str, JobStatus] = {}
+RESULT_KEY_SEPARATOR = "|"
+STATE_ROOT = (Path.cwd() / ".synthcode_state").resolve()
 
 
 @router.post("/analyze", response_model=AnalyzeResponse)
@@ -25,7 +28,7 @@ async def analyze_repo(
     background_tasks: BackgroundTasks,
     settings: Settings = Depends(settings_dep),
 ) -> AnalyzeResponse:
-    restore_state(settings)
+    restore_state()
     key = result_key(request.owner, request.repo, request.branch)
     cached = RESULTS.get(key)
     if cached and cached.expires_at > now_utc() and not request.force_rescan:
@@ -50,8 +53,8 @@ async def analyze_repo(
 
 
 @router.get("/status/{job_id}", response_model=JobStatus)
-async def get_status(job_id: str, settings: Settings = Depends(settings_dep)) -> JobStatus:
-    restore_state(settings)
+async def get_status(job_id: str) -> JobStatus:
+    restore_state()
     status = JOBS.get(job_id)
     if not status:
         raise HTTPException(status_code=404, detail="Unknown job_id")
@@ -59,8 +62,8 @@ async def get_status(job_id: str, settings: Settings = Depends(settings_dep)) ->
 
 
 @router.get("/results/{owner}/{repo}", response_model=AnalysisResult)
-async def get_results(owner: str, repo: str, branch: str = "main", settings: Settings = Depends(settings_dep)) -> AnalysisResult:
-    restore_state(settings)
+async def get_results(owner: str, repo: str, branch: str = "main") -> AnalysisResult:
+    restore_state()
     result = RESULTS.get(result_key(owner, repo, branch))
     if not result or result.expires_at <= now_utc():
         raise HTTPException(status_code=404, detail="No cached analysis found")
@@ -110,25 +113,28 @@ def now_utc() -> datetime:
     return datetime.now(timezone.utc)
 
 
-def state_file_path(settings: Settings | None = None) -> str:
-    if settings:
-        return settings.JOB_RESULT_STORE_PATH
-    return os.getenv("JOB_RESULT_STORE_PATH", "/tmp/synthcode_job_store.json")
+def state_file_path() -> str:
+    return str((STATE_ROOT / "job_store.json").resolve())
 
 
-def restore_state(settings: Settings | None = None) -> None:
-    path = state_file_path(settings)
-    if not path or not os.path.exists(path):
+def restore_state() -> None:
+    path = Path(state_file_path()).resolve()
+    if not path.is_relative_to(STATE_ROOT):
+        return
+    if not path.exists():
         return
     if RESULTS or JOBS:
         return
     try:
-        with open(path, encoding="utf-8") as handle:
+        with path.open(encoding="utf-8") as handle:
             payload = json.load(handle)
         raw_results = payload.get("results", {})
         raw_jobs = payload.get("jobs", {})
         for key, value in raw_results.items():
-            owner, repo, branch = key.split("|", 2)
+            parts = key.split(RESULT_KEY_SEPARATOR, 2)
+            if len(parts) != 3:
+                continue
+            owner, repo, branch = parts
             result = AnalysisResult.model_validate(value)
             if result.expires_at > now_utc():
                 RESULTS[(owner, repo, branch)] = result
@@ -160,21 +166,20 @@ def prune_state(settings: Settings) -> None:
 
 
 def persist_state(settings: Settings) -> None:
-    path = state_file_path(settings)
-    if not path:
-        return
+    path = state_file_path()
     try:
-        directory = os.path.dirname(path)
-        if directory:
-            os.makedirs(directory, exist_ok=True)
+        safe_path = Path(path).resolve()
+        if not safe_path.is_relative_to(STATE_ROOT):
+            return
+        os.makedirs(STATE_ROOT, exist_ok=True)
         payload = {
             "results": {
-                f"{owner}|{repo}|{branch}": result.model_dump(mode="json")
+                f"{owner}{RESULT_KEY_SEPARATOR}{repo}{RESULT_KEY_SEPARATOR}{branch}": result.model_dump(mode="json")
                 for (owner, repo, branch), result in RESULTS.items()
             },
             "jobs": {job_id: job.model_dump(mode="json") for job_id, job in JOBS.items()},
         }
-        with open(path, "w", encoding="utf-8") as handle:
+        with safe_path.open("w", encoding="utf-8") as handle:
             json.dump(payload, handle)
     except OSError:
         return

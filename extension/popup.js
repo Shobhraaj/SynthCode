@@ -7,6 +7,7 @@ const scoreValue = document.getElementById("scoreValue");
 const scoreLabel = document.getElementById("scoreLabel");
 const scoreMeta = document.getElementById("scoreMeta");
 const apiBaseUrl = document.getElementById("apiBaseUrl");
+const MAX_POPUP_EXPLANATION_ITEMS = 2;
 
 let activeRepo = null;
 
@@ -83,7 +84,7 @@ function renderScore(result) {
   const percent = Math.round(score * 100);
   const confidence = Math.round(Number(result.confidence || 0) * 100);
   const explanation = Array.isArray(result.explanation) && result.explanation.length
-    ? result.explanation.slice(0, 2).join(" • ")
+    ? result.explanation.slice(0, MAX_POPUP_EXPLANATION_ITEMS).join(" • ")
     : "";
   scoreBlock.hidden = false;
   scoreValue.textContent = `${percent}%`;

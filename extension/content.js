@@ -2,6 +2,8 @@ const BADGE_ID = "synthcode-repo-badge";
 const CARD_ID = "synthcode-score-card";
 const FILE_BADGE_ID = "synthcode-file-badge";
 const ROUTE_DEBOUNCE_MS = 250;
+const MAX_FILE_SIGNALS = 2;
+const MAX_REPO_EXPLANATION_ITEMS = 3;
 
 let currentRoute = "";
 let routeTimer = null;
@@ -202,7 +204,7 @@ function scoreCardMarkup(repo, result, percent, label) {
   const files = (result.file_scores || []).slice(0, 5);
   const sourceText = result.source === "mock-fallback" ? "Mock score" : "Analysis";
   const confidence = Math.round(Number(result.confidence || 0) * 100);
-  const explanation = Array.isArray(result.explanation) ? result.explanation.slice(0, 3) : [];
+  const explanation = Array.isArray(result.explanation) ? result.explanation.slice(0, MAX_REPO_EXPLANATION_ITEMS) : [];
 
   return `
     <div class="synthcode-card__header">
@@ -231,7 +233,7 @@ function fileListMarkup(files) {
     const score = Number(file.score || 0);
     const percent = Math.round(score * 100);
     const signalText = Array.isArray(file.top_signals) && file.top_signals.length
-      ? `<small>${escapeHtml(file.top_signals.slice(0, 2).join(", "))}</small>`
+      ? `<small>${escapeHtml(file.top_signals.slice(0, MAX_FILE_SIGNALS).join(", "))}</small>`
       : "";
     return `
       <li>

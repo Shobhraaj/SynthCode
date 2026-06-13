@@ -13,6 +13,12 @@ from backend.app.services.heuristic import SIGNAL_WEIGHTS
 class EnsembleScorer:
     ML_WEIGHT = 0.70
     HEURISTIC_WEIGHT = 0.30
+    ML_WEIGHT_NO_CHUNKS = 0.20
+    HEURISTIC_WEIGHT_NO_CHUNKS = 0.80
+    CHUNKS_FOR_FULL_COVERAGE = 3
+    MIN_COVERAGE_NO_CHUNKS = 0.15
+    AGREEMENT_WEIGHT = 0.75
+    COVERAGE_WEIGHT = 0.25
 
     def __init__(self, settings: Settings):
         self.settings = settings
@@ -72,13 +78,17 @@ class EnsembleScorer:
 
     def _weights_for_file(self, chunks_analyzed: int) -> tuple[float, float]:
         if chunks_analyzed <= 0:
-            return 0.2, 0.8
+            return self.ML_WEIGHT_NO_CHUNKS, self.HEURISTIC_WEIGHT_NO_CHUNKS
         return self.ML_WEIGHT, self.HEURISTIC_WEIGHT
 
     def _file_confidence(self, ml_score: float, heuristic_score: float, chunks_analyzed: int) -> float:
         agreement = 1.0 - abs(ml_score - heuristic_score)
-        coverage = min(1.0, max(0.0, chunks_analyzed / 3)) if chunks_analyzed > 0 else 0.15
-        return clamp((agreement * 0.75) + (coverage * 0.25))
+        coverage = (
+            min(1.0, max(0.0, chunks_analyzed / self.CHUNKS_FOR_FULL_COVERAGE))
+            if chunks_analyzed > 0
+            else self.MIN_COVERAGE_NO_CHUNKS
+        )
+        return clamp((agreement * self.AGREEMENT_WEIGHT) + (coverage * self.COVERAGE_WEIGHT))
 
 
 def weighted_mean(scores: list[FileScore]) -> float:

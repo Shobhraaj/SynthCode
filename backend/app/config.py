@@ -48,7 +48,6 @@ class Settings(BaseSettings):
     CACHE_TTL_DB_DAYS: int = 7
     JOB_HISTORY_LIMIT: int = 300
     RESULT_STORE_LIMIT: int = 200
-    JOB_RESULT_STORE_PATH: str = "/tmp/synthcode_job_store.json"
     MODEL_VERSION: str = "phase2-heuristic-ensemble-v1"
 
     class Config:
