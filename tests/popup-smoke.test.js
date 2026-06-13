@@ -15,6 +15,14 @@ test("popup parses repository URLs", () => {
     plain(context.parseGitHubRepo("https://github.com/openai/openai-python")),
     { owner: "openai", repo: "openai-python", branch: "main" }
   );
+  assert.deepEqual(
+    plain(context.parseGitHubRepo("https://github.com/openai/openai-python/tree/dev")),
+    { owner: "openai", repo: "openai-python", branch: "dev" }
+  );
+  assert.deepEqual(
+    plain(context.parseGitHubRepo("https://github.com/openai/openai-python/blob/feature-1/src/main.py")),
+    { owner: "openai", repo: "openai-python", branch: "feature-1" }
+  );
   assert.equal(context.parseGitHubRepo("https://example.com/openai/openai-python"), null);
   assert.equal(context.parseGitHubRepo("not-a-url"), null);
 });
@@ -50,7 +58,7 @@ test("popup init renders cached analysis", async () => {
   });
 
   await context.init();
-  assert.equal(elements.repoName.textContent, "octocat/hello-world");
+  assert.equal(elements.repoName.textContent, "octocat/hello-world@main");
   assert.equal(elements.statusPill.textContent, "Cached");
   assert.equal(elements.scoreBlock.hidden, false);
   assert.equal(elements.scoreLabel.textContent, "mixed");

@@ -40,6 +40,7 @@ class FileContent:
 class GitHubFetcher:
     def __init__(self, settings: Settings):
         self.settings = settings
+        self._fetch_semaphore = asyncio.Semaphore(max(1, settings.GITHUB_MAX_CONCURRENT_FETCHES))
 
     async def validate_repo(self, owner: str, repo: str) -> RepoMeta:
         data = await self._request_json("GET", f"/repos/{owner}/{repo}")
@@ -98,7 +99,11 @@ class GitHubFetcher:
         paths: list[str],
         branch: str = "main",
     ) -> list[FileContent]:
-        tasks = [self.fetch_file_content(owner, repo, path, branch) for path in paths]
+        async def limited_fetch(path: str) -> FileContent:
+            async with self._fetch_semaphore:
+                return await self.fetch_file_content(owner, repo, path, branch)
+
+        tasks = [limited_fetch(path) for path in paths]
         return list(await asyncio.gather(*tasks))
 
     async def _request_json(self, method: str, path: str, params: dict[str, str] | None = None) -> Any:
@@ -142,4 +147,3 @@ class GitHubFetcher:
                 reset_dt = parsedate_to_datetime(reset_header).timestamp() if reset_header and not reset_header.isdigit() else None
                 if reset_dt and reset_dt > time():
                     await asyncio.sleep(1)
-

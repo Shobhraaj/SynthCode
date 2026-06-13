@@ -18,7 +18,7 @@ def test_ml_or_heuristic_falls_back_when_inference_disabled():
 
     scores = asyncio.run(pipeline._ml_or_heuristic(files, heuristics))
 
-    assert scores == [MLFileScore(path="src/a.py", score=0.6, chunks_analyzed=1)]
+    assert scores == [MLFileScore(path="src/a.py", score=0.6, chunks_analyzed=0)]
 
 
 def test_ml_or_heuristic_falls_back_on_inference_error():
@@ -33,7 +33,7 @@ def test_ml_or_heuristic_falls_back_on_inference_error():
 
     scores = asyncio.run(pipeline._ml_or_heuristic(files, heuristics))
 
-    assert scores == [MLFileScore(path="src/a.py", score=0.2, chunks_analyzed=1)]
+    assert scores == [MLFileScore(path="src/a.py", score=0.2, chunks_analyzed=0)]
 
 
 def test_analyze_repo_uses_default_branch_and_reports_progress():
@@ -72,7 +72,7 @@ def test_analyze_repo_uses_default_branch_and_reports_progress():
             assert branch == "dev"
             assert commit_sha == "tree-sha"
             assert len(files) == 1
-            assert ml_scores == [MLFileScore(path="src/a.py", score=0.3, chunks_analyzed=1)]
+            assert ml_scores == [MLFileScore(path="src/a.py", score=0.3, chunks_analyzed=0)]
             assert heuristic_scores[0].composite == 0.3
             return AnalysisResult(
                 owner=owner,

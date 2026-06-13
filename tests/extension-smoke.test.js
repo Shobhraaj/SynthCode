@@ -45,7 +45,7 @@ test("background worker analyzes through API and caches results", async () => {
 });
 
 test("background worker falls back to deterministic mock result", async () => {
-  const { listener } = loadBackground({
+  const { listener, storage } = loadBackground({
     fetch: async () => {
       throw new Error("offline");
     }
@@ -67,6 +67,7 @@ test("background worker falls back to deterministic mock result", async () => {
   assert.equal(first.result.source, "mock-fallback");
   assert.equal(first.result.overall_score, second.result.overall_score);
   assert.equal(first.result.file_scores.length, 5);
+  assert.equal(storage["synthcode:octocat/hello-world:main"], undefined);
 });
 
 test("content script parses GitHub repository and file routes", () => {
@@ -81,6 +82,16 @@ test("content script parses GitHub repository and file routes", () => {
     owner: "owner",
     repo: "repo.with.dots",
     branch: "main"
+  });
+  assert.deepEqual(plain(context.parseGitHubRepo("/owner/repo/tree/develop")), {
+    owner: "owner",
+    repo: "repo",
+    branch: "develop"
+  });
+  assert.deepEqual(plain(context.parseGitHubRepo("/owner/repo/blob/feature-x/src/app.ts")), {
+    owner: "owner",
+    repo: "repo",
+    branch: "feature-x"
   });
   assert.equal(
     context.parseGitHubFilePath("/openai/openai-python/blob/main/src/index.ts"),

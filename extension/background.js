@@ -129,10 +129,13 @@ function normalizeResult(result, source) {
     file_scores: fileScores.slice(0, 8).map((file) => ({
       path: String(file.path || file.file_path || "unknown"),
       score: clamp(Number(file.score || 0), 0, 1),
-      language: file.language || inferLanguage(file.path || file.file_path || "")
+      language: file.language || inferLanguage(file.path || file.file_path || ""),
+      top_signals: Array.isArray(file.top_signals) ? file.top_signals : []
     })),
     scanned_at: result.scanned_at || new Date().toISOString(),
     model_version: result.model_version || MODEL_VERSION,
+    confidence: clamp(Number(result.confidence || 0), 0, 1),
+    explanation: Array.isArray(result.explanation) ? result.explanation : [],
     source
   };
 }
@@ -167,6 +170,8 @@ function buildMockResult(repo, fallbackReason) {
     file_scores,
     scanned_at: new Date().toISOString(),
     model_version: MODEL_VERSION,
+    confidence: 0.2,
+    explanation: ["Backend unavailable, this is a deterministic fallback score"],
     source: "mock-fallback",
     note: `Backend unavailable, using deterministic mock score. ${fallbackReason || ""}`.trim()
   };
@@ -183,11 +188,17 @@ async function getCachedResult(repo) {
   if (!cached || Date.now() - cached.cached_at > CACHE_TTL_MS) {
     return null;
   }
+  if (cached.result?.source === "mock-fallback") {
+    return null;
+  }
 
   return cached.result;
 }
 
 async function cacheResult(repo, result) {
+  if (result?.source === "mock-fallback") {
+    return;
+  }
   await storageSet({
     [cacheKey(repo)]: {
       cached_at: Date.now(),
