@@ -1,0 +1,2 @@
+"""SynthCode backend package root."""
+

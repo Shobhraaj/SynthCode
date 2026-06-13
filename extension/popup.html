@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SynthCode</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <p class="kicker">SynthCode</p>
+          <h1>Repository scan</h1>
+        </div>
+        <output id="statusPill" class="status-pill">Ready</output>
+      </header>
+
+      <section class="panel" aria-labelledby="repoHeading">
+        <h2 id="repoHeading">Current repository</h2>
+        <p id="repoName" class="repo-name">Open a GitHub repository tab.</p>
+        <div id="scoreBlock" class="score-block" hidden>
+          <div>
+            <span id="scoreValue" class="score-value">0%</span>
+            <span id="scoreLabel" class="score-label">No score</span>
+          </div>
+          <small id="scoreMeta">Not scanned yet</small>
+        </div>
+        <button id="scanButton" class="primary-button" type="button">Scan repository</button>
+      </section>
+
+      <section class="panel" aria-labelledby="settingsHeading">
+        <h2 id="settingsHeading">Settings</h2>
+        <label class="field">
+          <span>API endpoint</span>
+          <input id="apiBaseUrl" type="url" placeholder="http://localhost:8000">
+        </label>
+        <button id="saveSettings" class="secondary-button" type="button">Save settings</button>
+      </section>
+
+      <aside class="notice" aria-label="Important notice">
+        <strong>Important Notice</strong>
+        <p>SynthCode provides predictions based on pattern analysis and heuristics. It can and will make mistakes. Treat results as one data point in a broader evaluation, never as definitive proof.</p>
+        <p>Use responsibly. When in doubt, have a conversation, not a conclusion.</p>
+      </aside>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>
