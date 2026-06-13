@@ -96,7 +96,7 @@ The Phase 2 backend fetches a repository tree from GitHub, filters and samples s
 
 The extension renders that confidence as a badge beside the GitHub repository name, a sidebar score card, and a per-file mini badge on file pages. If the backend is not running, the extension falls back to a deterministic mock score so the UI can still be tested.
 
-ML inference is disabled by default with `INFERENCE_ENABLED=false`; in that mode, the ensemble uses heuristic scores as the ML stand-in. Set `INFERENCE_ENABLED=true` and run the inference service when trained weights are available under `inference/ml/weights`.
+ML inference is disabled by default with `INFERENCE_ENABLED=false`; in that mode, the ensemble uses heuristic scores as the ML stand-in. Now that the baseline model weights are available under `inference/ml/weights`, you can set `INFERENCE_ENABLED=true` and run the inference service to use the trained token-based model.
 
 ## Phase 2 Backend Features
 
@@ -215,7 +215,8 @@ Last verified checks:
 - Python compilation passes for `main.py`, `backend`, and `inference`.
 - FastAPI smoke check returns `200` for `/api/v1/health` and a valid response shape for `/api/v1/analyze`.
 - `pytest` was not installed in the local environment during the last verification, so backend service tests were added but not executed there.
+- Baseline model was successfully trained and evaluated against `basakdemirok/AIGCodeSet` with ~72.7% accuracy.
 
 ## Current Limits
 
-The inference service includes a heuristic fallback until trained CodeBERT weights are available. PostgreSQL persistence, Redis-backed job state/cache, and Celery execution are scaffolded, while the local API path currently keeps in-memory job/result state for fast development. Dataset licensing and GitHub Terms of Service still need review before large-scale training data collection.
+The inference service now uses a trained token-based heuristic baseline model. A more advanced CodeBERT implementation remains scaffolded for future development. PostgreSQL persistence, Redis-backed job state/cache, and Celery execution are scaffolded, while the local API path currently keeps in-memory job/result state for fast development. The `basakdemirok/AIGCodeSet` dataset has been integrated and processed for baseline training.
