@@ -201,6 +201,8 @@ function scoreCardMarkup(repo, result, percent, label) {
   const scannedAt = result.scanned_at ? new Date(result.scanned_at).toLocaleString() : "Just now";
   const files = (result.file_scores || []).slice(0, 5);
   const sourceText = result.source === "mock-fallback" ? "Mock score" : "Analysis";
+  const confidence = Math.round(Number(result.confidence || 0) * 100);
+  const explanation = Array.isArray(result.explanation) ? result.explanation.slice(0, 3) : [];
 
   return `
     <div class="synthcode-card__header">
@@ -211,11 +213,13 @@ function scoreCardMarkup(repo, result, percent, label) {
       <div class="synthcode-score">${percent}</div>
     </div>
     <dl class="synthcode-meta">
-      <div><dt>Repository</dt><dd>${escapeHtml(repo.owner)}/${escapeHtml(repo.repo)}</dd></div>
+      <div><dt>Repository</dt><dd>${escapeHtml(repo.owner)}/${escapeHtml(repo.repo)} @ ${escapeHtml(repo.branch || "main")}</dd></div>
       <div><dt>Files</dt><dd>${Number(result.files_analyzed || files.length)}</dd></div>
+      <div><dt>Confidence</dt><dd>${confidence}%</dd></div>
       <div><dt>Source</dt><dd>${escapeHtml(sourceText)}</dd></div>
       <div><dt>Scanned</dt><dd>${escapeHtml(scannedAt)}</dd></div>
     </dl>
+    ${explanation.length ? `<p class="synthcode-muted">${escapeHtml(explanation.join(" • "))}</p>` : ""}
     ${files.length ? fileListMarkup(files) : ""}
     <button class="synthcode-action" type="button" data-synthcode-rescan>Rescan</button>
     ${disclaimerMarkup()}
@@ -226,9 +230,12 @@ function fileListMarkup(files) {
   const rows = files.map((file) => {
     const score = Number(file.score || 0);
     const percent = Math.round(score * 100);
+    const signalText = Array.isArray(file.top_signals) && file.top_signals.length
+      ? `<small>${escapeHtml(file.top_signals.slice(0, 2).join(", "))}</small>`
+      : "";
     return `
       <li>
-        <span title="${escapeHtml(file.path)}">${escapeHtml(file.path)}</span>
+        <span title="${escapeHtml(file.path)}">${escapeHtml(file.path)}${signalText}</span>
         <strong class="synthcode-file-score synthcode-file-score--${toneForScore(score)}">${percent}%</strong>
       </li>
     `;
@@ -263,7 +270,15 @@ function parseGitHubRepo(pathname) {
     return null;
   }
 
-  return { owner, repo, branch: "main" };
+  let branch = "main";
+  const treeIndex = parts.indexOf("tree");
+  const blobIndex = parts.indexOf("blob");
+  const branchIndex = treeIndex >= 0 ? treeIndex + 1 : blobIndex >= 0 ? blobIndex + 1 : -1;
+  if (branchIndex >= 0 && parts[branchIndex]) {
+    branch = parts[branchIndex];
+  }
+
+  return { owner, repo, branch };
 }
 
 function parseGitHubFilePath(pathname) {

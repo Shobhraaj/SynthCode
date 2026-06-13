@@ -27,7 +27,7 @@ async function init() {
     return;
   }
 
-  repoName.textContent = `${activeRepo.owner}/${activeRepo.repo}`;
+  repoName.textContent = `${activeRepo.owner}/${activeRepo.repo}@${activeRepo.branch}`;
   const cached = await sendMessage({ type: "SYNTHCODE_GET_CACHED", repo: activeRepo });
   if (cached?.result) {
     renderScore(cached.result);
@@ -81,10 +81,14 @@ async function saveSettings() {
 function renderScore(result) {
   const score = Number(result.overall_score || 0);
   const percent = Math.round(score * 100);
+  const confidence = Math.round(Number(result.confidence || 0) * 100);
+  const explanation = Array.isArray(result.explanation) && result.explanation.length
+    ? result.explanation.slice(0, 2).join(" • ")
+    : "";
   scoreBlock.hidden = false;
   scoreValue.textContent = `${percent}%`;
   scoreLabel.textContent = result.label || labelForScore(score);
-  scoreMeta.textContent = `${Number(result.files_analyzed || 0)} files, ${formatDate(result.scanned_at)}`;
+  scoreMeta.textContent = `${Number(result.files_analyzed || 0)} files, confidence ${confidence}%, ${formatDate(result.scanned_at)}${explanation ? `, ${explanation}` : ""}`;
 }
 
 function parseGitHubRepo(url) {
@@ -99,7 +103,15 @@ function parseGitHubRepo(url) {
       return null;
     }
 
-    return { owner: parts[0], repo: parts[1], branch: "main" };
+    let branch = "main";
+    const treeIndex = parts.indexOf("tree");
+    const blobIndex = parts.indexOf("blob");
+    const branchIndex = treeIndex >= 0 ? treeIndex + 1 : blobIndex >= 0 ? blobIndex + 1 : -1;
+    if (branchIndex >= 0 && parts[branchIndex]) {
+      branch = parts[branchIndex];
+    }
+
+    return { owner: parts[0], repo: parts[1], branch };
   } catch {
     return null;
   }

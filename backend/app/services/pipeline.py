@@ -49,11 +49,10 @@ class AnalysisPipeline:
             except InferenceServiceError:
                 pass
         return [
-            MLFileScore(path=file.path, score=heuristic.composite, chunks_analyzed=1)
+            MLFileScore(path=file.path, score=heuristic.composite, chunks_analyzed=0)
             for file, heuristic in zip(files, heuristic_scores)
         ]
 
     async def _progress(self, callback, progress: int, message: str) -> None:
         if callback:
             await callback(progress, message)
-

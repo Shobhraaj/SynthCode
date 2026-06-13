@@ -30,6 +30,7 @@ class Settings(BaseSettings):
     GITHUB_TOKEN: str = ""
     GITHUB_API_BASE: str = "https://api.github.com"
     GITHUB_LOW_RATE_REMAINING: int = 100
+    GITHUB_MAX_CONCURRENT_FETCHES: int = 6
 
     INFERENCE_SERVICE_URL: str = "http://inference:8001"
     INFERENCE_TIMEOUT: int = 30
@@ -45,6 +46,9 @@ class Settings(BaseSettings):
     MAX_FILE_BYTES: int = 100 * 1024
     CACHE_TTL_REDIS: int = 3600
     CACHE_TTL_DB_DAYS: int = 7
+    JOB_HISTORY_LIMIT: int = 300
+    RESULT_STORE_LIMIT: int = 200
+    JOB_RESULT_STORE_PATH: str = "/tmp/synthcode_job_store.json"
     MODEL_VERSION: str = "phase2-heuristic-ensemble-v1"
 
     class Config:
@@ -54,4 +58,3 @@ class Settings(BaseSettings):
 @lru_cache
 def get_settings() -> Settings:
     return Settings()
-

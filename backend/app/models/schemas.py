@@ -25,6 +25,8 @@ class FileScore(BaseModel):
     size_bytes: int = Field(default=0, ge=0)
     ml_score: float | None = Field(default=None, ge=0, le=1)
     heuristic_score: float | None = Field(default=None, ge=0, le=1)
+    confidence: float = Field(default=0, ge=0, le=1)
+    top_signals: list[str] = Field(default_factory=list)
 
 
 class AnalysisResult(BaseModel):
@@ -37,6 +39,8 @@ class AnalysisResult(BaseModel):
     file_scores: list[FileScore]
     scanned_at: datetime
     model_version: str
+    confidence: float = Field(default=0, ge=0, le=1)
+    explanation: list[str] = Field(default_factory=list)
     expires_at: datetime
     scanned_commit_sha: str | None = None
 
@@ -63,4 +67,3 @@ class HealthResponse(BaseModel):
     service: str
     model_version: str
     inference_enabled: bool
-

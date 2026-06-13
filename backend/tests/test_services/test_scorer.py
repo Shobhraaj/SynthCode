@@ -31,9 +31,13 @@ def test_ensemble_scorer_blends_scores_and_falls_back_to_heuristic():
     assert result.files_analyzed == 2
     assert result.file_scores[0].score == 0.69
     assert result.file_scores[0].ml_score == 0.9
+    assert 0 <= result.file_scores[0].confidence <= 1
+    assert len(result.file_scores[0].top_signals) == 3
     assert result.file_scores[1].score == 0.4
     assert result.file_scores[1].ml_score == 0.4
     assert result.overall_score == 0.4725
+    assert 0 <= result.confidence <= 1
+    assert result.explanation
     assert result.label == "mixed"
     assert result.scanned_commit_sha == "commit-sha"
 
